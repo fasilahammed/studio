@@ -8,16 +8,19 @@ import {
   SkipForward,
   Volume2,
 } from 'lucide-react';
-import { usePlayer } from '@/context/player-context';
 import { Button } from './ui/button';
 import { Progress } from './ui/progress';
 import { useEffect, useState } from 'react';
 import AudioVisualizer from './audio-visualizer';
 import { getRandomPlaceholder } from '@/lib/utils';
 import type { ImagePlaceholder } from '@/lib/placeholder-images';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '@/lib/store';
+import { togglePlay } from '@/lib/features/player/player-slice';
 
 export default function MusicPlayer() {
-  const { currentSong, isPlaying, togglePlay } = usePlayer();
+  const { currentSong, isPlaying } = useSelector((state: RootState) => state.player);
+  const dispatch = useDispatch();
   const [progress, setProgress] = useState(0);
   const [placeholder, setPlaceholder] = useState<ImagePlaceholder | null>(null);
 
@@ -81,7 +84,7 @@ export default function MusicPlayer() {
               variant="default"
               size="icon"
               className="h-12 w-12 rounded-full bg-primary shadow-lg shadow-primary/30 hover:bg-primary/90"
-              onClick={togglePlay}
+              onClick={() => dispatch(togglePlay())}
             >
               {isPlaying ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6 fill-current" />}
             </Button>

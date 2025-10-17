@@ -3,12 +3,12 @@
 import Link from 'next/link';
 import MainContainer from '@/components/layout/main-container';
 import SongList from '@/components/song-list';
-import { Button } from '@/components/ui/button';
-import { usePlayer } from '@/context/player-context';
 import { ArrowLeft } from 'lucide-react';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/lib/store';
 
 export default function LikedSongsPage() {
-  const { likedSongs } = usePlayer();
+  const { likedSongs } = useSelector((state: RootState) => state.player);
 
   return (
     <MainContainer>
@@ -22,12 +22,13 @@ export default function LikedSongsPage() {
               Your favorite tracks, all in one place.
             </p>
           </div>
-          <Button variant="link" asChild className="text-foreground">
-            <Link href="/">
-              <ArrowLeft className="mr-2" />
+           <Link
+              href="/"
+              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <ArrowLeft className="mr-2 inline h-4 w-4" />
               Back to Home
             </Link>
-          </Button>
         </div>
         <SongList
           songs={likedSongs}

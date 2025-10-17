@@ -1,29 +1,44 @@
 'use client';
 
 import Image from 'next/image';
-import { MoreHorizontal, Music, Play, Heart } from 'lucide-react';
+import { Music, Play, Heart } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { usePlayer } from '@/context/player-context';
 import type { Song } from '@/lib/types';
 import { getRandomPlaceholder } from '@/lib/utils';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import { useDispatch, useSelector } from 'react-redux';
+import { playSong, toggleLikeSong } from '@/lib/features/player/player-slice';
+import { RootState } from '@/lib/store';
+import { useToast } from '@/hooks/use-toast';
 
 type SongCardProps = {
   song: Song;
 };
 
 export default function SongCard({ song }: SongCardProps) {
-  const { playSong, currentSong, isPlaying, toggleLikeSong, isLiked } = usePlayer();
+  const dispatch = useDispatch();
+  const { toast } = useToast();
+  const { currentSong, isPlaying, likedSongs } = useSelector((state: RootState) => state.player);
   const [placeholder] = useState(getRandomPlaceholder);
 
   const isActive = currentSong?.id === song.id;
-  const liked = isLiked(song.id);
+  const isLiked = likedSongs.some(s => s.id === song.id);
 
+  const handlePlayClick = () => {
+    dispatch(playSong(song));
+  };
+  
   const handleLikeClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // prevent card's play onClick if any
-    toggleLikeSong(song);
+    e.stopPropagation();
+    const wasLiked = isLiked;
+    dispatch(toggleLikeSong(song));
+    if (wasLiked) {
+      toast({ title: "Removed from Liked Songs", description: `"${song.title}" by ${song.artist}` });
+    } else {
+      toast({ title: "Added to Liked Songs", description: `"${song.title}" by ${song.artist}` });
+    }
   };
 
   return (
@@ -45,7 +60,7 @@ export default function SongCard({ song }: SongCardProps) {
               variant="ghost"
               size="icon"
               className="absolute right-2 top-2 h-8 w-8 rounded-full bg-black/30 text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 hover:bg-primary"
-              onClick={() => playSong(song)}
+              onClick={handlePlayClick}
             >
               <Play className="h-5 w-5" />
             </Button>
@@ -56,10 +71,10 @@ export default function SongCard({ song }: SongCardProps) {
               onClick={handleLikeClick}
               className={cn(
                 "absolute left-2 top-2 h-8 w-8 rounded-full bg-black/30 text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 hover:bg-primary",
-                liked && "text-red-500 hover:text-red-400 opacity-100"
+                isLiked && "text-red-500 hover:text-red-400 opacity-100"
               )}
             >
-              <Heart className={cn("h-5 w-5", liked && "fill-current")} />
+              <Heart className={cn("h-5 w-5", isLiked && "fill-current")} />
             </Button>
 
             <div className="absolute bottom-4 left-4 right-4">

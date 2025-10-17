@@ -1,3 +1,64 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "album-1",
+      "description": "Abstract sound waves",
+      "imageUrl": "https://picsum.photos/seed/music1/400/400",
+      "imageHint": "abstract waves"
+    },
+    {
+      "id": "album-2",
+      "description": "Person with headphones",
+      "imageUrl": "https://picsum.photos/seed/music2/400/400",
+      "imageHint": "headphones music"
+    },
+    {
+      "id": "album-3",
+      "description": "Colorful geometric pattern",
+      "imageUrl": "https://picsum.photos/seed/music3/400/400",
+      "imageHint": "abstract geometric"
+    },
+    {
+      "id": "album-4",
+      "description": "Vinyl record on a turntable",
+      "imageUrl": "https://picsum.photos/seed/music4/400/400",
+      "imageHint": "vinyl record"
+    },
+    {
+      "id": "album-5",
+      "description": "Concert stage lights",
+      "imageUrl": "https://picsum.photos/seed/music5/400/400",
+      "imageHint": "concert lights"
+    },
+    {
+      "id": "album-6",
+      "description": "Abstract paint strokes",
+      "imageUrl": "https://picsum.photos/seed/music6/400/400",
+      "imageHint": "abstract paint"
+    },
+    {
+      "id": "album-7",
+      "description": "Close up of guitar strings",
+      "imageUrl": "https://picsum.photos/seed/music7/400/400",
+      "imageHint": "guitar strings"
+    },
+    {
+      "id": "album-8",
+      "description": "Cityscape at night",
+      "imageUrl": "https://picsum.photos/seed/music8/400/400",
+      "imageHint": "city night"
+    },
+    {
+      "id": "album-9",
+      "description": "Neon light sign",
+      "imageUrl": "https://picsum.photos/seed/music9/400/400",
+      "imageHint": "neon sign"
+    },
+    {
+      "id": "album-10",
+      "description": "Galaxy stars",
+      "imageUrl": "https://picsum.photos/seed/music10/400/400",
+      "imageHint": "galaxy stars"
+    }
+  ]
 }

@@ -22,7 +22,7 @@ export default function LikedSongsPage() {
               Your favorite tracks, all in one place.
             </p>
           </div>
-          <Button variant="outline" asChild>
+          <Button variant="link" asChild className="text-foreground">
             <Link href="/">
               <ArrowLeft className="mr-2" />
               Back to Home

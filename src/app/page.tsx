@@ -7,7 +7,7 @@ export default async function Home({
 }: {
   searchParams?: { q?: string };
 }) {
-  const searchQuery = searchParams?.q || '';
+  const searchQuery = searchParams?.q ?? '';
   const isSearching = !!searchQuery;
 
   // Fetch data in parallel

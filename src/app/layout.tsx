@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { Toaster } from '@/components/ui/toaster';
 import { PlayerProvider } from '@/context/player-context';
-import { AuthProvider } from '@/context/auth-provider';
 import Header from '@/components/layout/header';
 import MusicPlayer from '@/components/music-player';
 import './globals.css';
@@ -24,10 +23,9 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased">
-        <AuthProvider>
           <PlayerProvider>
-            <div className="relative min-h-screen bg-[#222] text-foreground">
-              <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-800" />
+            <div className="relative min-h-screen bg-background text-foreground">
+               <div className="absolute inset-0 z-0 h-full w-full bg-background bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(160,32,240,0.3),rgba(255,255,255,0))]"></div>
               <div className="relative z-10 flex min-h-screen flex-col">
                 <Header />
                 <main className="flex-grow">{children}</main>
@@ -36,7 +34,6 @@ export default function RootLayout({
             </div>
             <Toaster />
           </PlayerProvider>
-        </AuthProvider>
       </body>
     </html>
   );

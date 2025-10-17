@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { Logo } from '@/components/icons';
 import { SearchBar } from '@/components/search-bar';
-import { AuthDialog } from '@/components/auth-dialog';
+import { Button } from '../ui/button';
+import { Heart } from 'lucide-react';
 
 export default function Header() {
   return (
@@ -10,14 +11,19 @@ export default function Header() {
         <Link href="/" className="flex items-center gap-2">
           <Logo className="h-6 w-6 text-primary" />
           <span className="font-headline text-xl font-bold tracking-wider">
-            MelodiaVerse
+            LoomIG
           </span>
         </Link>
         <div className="flex flex-1 items-center justify-end gap-4">
           <div className="hidden sm:block sm:w-full sm:max-w-xs">
             <SearchBar />
           </div>
-          <AuthDialog />
+          <Button variant="ghost" size="icon" asChild>
+            <Link href="/liked">
+              <Heart />
+              <span className="sr-only">Liked Songs</span>
+            </Link>
+          </Button>
         </div>
       </div>
        <div className="container mx-auto px-4 pb-4 sm:hidden">

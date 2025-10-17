@@ -7,7 +7,7 @@ import MusicPlayer from '@/components/music-player';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'MelodiaVerse',
+  title: 'LoomIG',
   description: 'Discover your next favorite song.',
 };
 

@@ -1,5 +1,4 @@
 import MainContainer from '@/components/layout/main-container';
-import PersonalizedRecommendations from '@/components/personalized-recommendations';
 import SongList from '@/components/song-list';
 import { getFeaturedSongs, searchSongs } from '@/lib/actions';
 
@@ -40,7 +39,6 @@ export default async function Home({
             </p>
             <SongList songs={initialSongs} />
           </section>
-          <PersonalizedRecommendations />
         </div>
       )}
     </MainContainer>

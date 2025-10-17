@@ -1,31 +1,30 @@
 'use client';
 
 import Image from 'next/image';
-import { MoreHorizontal, Music, Play, Sparkles } from 'lucide-react';
+import { MoreHorizontal, Music, Play, Heart } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { usePlayer } from '@/context/player-context';
 import type { Song } from '@/lib/types';
 import { getRandomPlaceholder } from '@/lib/utils';
 import { useState } from 'react';
-import { AiPlaylistDialog } from './ai-playlist-dialog';
+import { cn } from '@/lib/utils';
 
 type SongCardProps = {
   song: Song;
 };
 
 export default function SongCard({ song }: SongCardProps) {
-  const { playSong, currentSong, isPlaying } = usePlayer();
+  const { playSong, currentSong, isPlaying, toggleLikeSong, isLiked } = usePlayer();
   const [placeholder] = useState(getRandomPlaceholder);
-  const [isPlaylistDialogOpen, setIsPlaylistDialogOpen] = useState(false);
 
   const isActive = currentSong?.id === song.id;
+  const liked = isLiked(song.id);
+
+  const handleLikeClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // prevent card's play onClick if any
+    toggleLikeSong(song);
+  };
 
   return (
     <>
@@ -51,23 +50,17 @@ export default function SongCard({ song }: SongCardProps) {
               <Play className="h-5 w-5" />
             </Button>
             
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="absolute left-2 top-2 h-8 w-8 rounded-full bg-black/30 text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 hover:bg-primary"
-                >
-                  <MoreHorizontal className="h-5 w-5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start">
-                <DropdownMenuItem onClick={() => setIsPlaylistDialogOpen(true)}>
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  <span>AI Playlist</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleLikeClick}
+              className={cn(
+                "absolute left-2 top-2 h-8 w-8 rounded-full bg-black/30 text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 hover:bg-primary",
+                liked && "text-red-500 hover:text-red-400 opacity-100"
+              )}
+            >
+              <Heart className={cn("h-5 w-5", liked && "fill-current")} />
+            </Button>
 
             <div className="absolute bottom-4 left-4 right-4">
               <h3 className="truncate font-headline text-lg font-bold">
@@ -90,11 +83,6 @@ export default function SongCard({ song }: SongCardProps) {
           </div>
         </CardContent>
       </Card>
-      <AiPlaylistDialog 
-        open={isPlaylistDialogOpen}
-        onOpenChange={setIsPlaylistDialogOpen}
-        song={song}
-      />
     </>
   );
 }

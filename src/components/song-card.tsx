@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { Music, Play, Heart, ListMusic } from 'lucide-react';
+import { Music, Play, Heart } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import type { Song } from '@/lib/types';
@@ -12,16 +12,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { playSong, toggleLikeSong } from '@/lib/features/player/player-slice';
 import { RootState } from '@/lib/store';
 import { useToast } from '@/hooks/use-toast';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
 
 type SongCardProps = {
   song: Song;
@@ -48,10 +38,6 @@ export default function SongCard({ song }: SongCardProps) {
       title: wasLiked ? "Removed from Liked Songs" : "Added to Liked Songs", 
       description: `"${song.title}" by ${song.artist}` 
     });
-  };
-
-  const handlePlaylistClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
   };
 
   return (
@@ -90,29 +76,6 @@ export default function SongCard({ song }: SongCardProps) {
               >
                 <Heart className={cn("h-5 w-5", isLiked && "fill-current")} />
               </Button>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={handlePlaylistClick}
-                    className="h-8 w-8 rounded-full bg-black/30 text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 hover:bg-primary"
-                  >
-                    <ListMusic className="h-5 w-5" />
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>AI Playlist Generation</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This feature is coming soon! Our AI will analyze the tempo, mood, and genre of "{song.title}" to create a personalized playlist of similar tracks for you.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogAction>Got it!</AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
             </div>
 
             <div className="absolute bottom-4 left-4 right-20">

@@ -12,7 +12,7 @@ const spaceGrotesk = Space_Grotesk({
 })
 
 export const metadata: Metadata = {
-  title: 'MelodiaVerse',
+  title: 'LoomIG',
   description: 'Discover your next favorite song.',
 };
 

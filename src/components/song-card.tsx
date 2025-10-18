@@ -6,13 +6,14 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import type { Song } from '@/lib/types';
 import { getRandomPlaceholder } from '@/lib/utils';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { playSong, toggleLikeSong } from '@/lib/features/player/player-slice';
 import { RootState } from '@/lib/store';
 import { useToast } from '@/hooks/use-toast';
 import AudioVisualizer from './audio-visualizer';
+import type { ImagePlaceholder } from '@/lib/placeholder-images';
 
 type SongCardProps = {
   song: Song;
@@ -23,7 +24,11 @@ export default function SongCard({ song, playlist }: SongCardProps) {
   const dispatch = useDispatch();
   const { toast } = useToast();
   const { currentSong, isPlaying, likedSongs } = useSelector((state: RootState) => state.player);
-  const [placeholder] = useState(getRandomPlaceholder);
+  const [placeholder, setPlaceholder] = useState<ImagePlaceholder | null>(null);
+
+  useEffect(() => {
+    setPlaceholder(getRandomPlaceholder());
+  }, []);
 
   const isActive = currentSong?.id === song.id;
   const isLiked = likedSongs.some(s => s.id === song.id);
@@ -42,7 +47,8 @@ export default function SongCard({ song, playlist }: SongCardProps) {
     });
   };
 
-  const imageUrl = song.coverArt || placeholder.imageUrl;
+  const imageUrl = song.coverArt || placeholder?.imageUrl || 'https://picsum.photos/seed/default/400/400';
+  const imageHint = placeholder?.imageHint || 'abstract music';
 
   return (
     <>
@@ -55,7 +61,7 @@ export default function SongCard({ song, playlist }: SongCardProps) {
               width={400}
               height={400}
               className="object-cover transition-transform duration-300 group-hover:scale-110"
-              data-ai-hint={placeholder.imageHint}
+              data-ai-hint={imageHint}
               unoptimized // Required for external URLs that aren't configured in next.config.js
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />

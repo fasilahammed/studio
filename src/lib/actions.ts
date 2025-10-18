@@ -17,11 +17,8 @@ export async function searchSongs(query: string, limit: number = 20): Promise<So
   return results.slice(0, limit);
 }
 
-export async function getFeaturedSongs(limit: number = 10): Promise<Song[]> {
-    return allSongs.slice(0, limit);
-}
-
 export async function getSongsByMood(mood: string, limit: number = 10): Promise<Song[]> {
+  if (!mood) return allSongs.slice(0, limit);
   const results = allSongs.filter(song => song.moods?.includes(mood));
   return results.slice(0, limit);
 }

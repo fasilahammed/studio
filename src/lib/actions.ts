@@ -39,9 +39,16 @@ const fetchFromTheAudioDB = async (path: string, params: URLSearchParams): Promi
       console.error(`TheAudioDB API error: ${res.status} ${res.statusText}`);
       return null;
     }
-    return res.json();
+    
+    // TheAudioDB can return an empty body for "not found" cases, which causes JSON.parse to fail.
+    const text = await res.text();
+    if (!text) {
+        return null; // Return null if the response body is empty.
+    }
+    return JSON.parse(text);
+
   } catch (error) {
-    console.error('Failed to fetch from TheAudioDB API:', error);
+    console.error('Failed to fetch or parse from TheAudioDB API:', error);
     return null;
   }
 }

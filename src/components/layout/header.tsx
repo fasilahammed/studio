@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Logo } from '@/components/icons';
 import { SearchBar } from '@/components/search-bar';
 import { Button } from '../ui/button';
-import { Heart, DiscAlbum } from 'lucide-react';
+import { Heart } from 'lucide-react';
 
 export default function Header() {
   return (
@@ -18,12 +18,6 @@ export default function Header() {
           <div className="hidden w-full max-w-xs sm:block">
             <SearchBar />
           </div>
-           <Button variant="ghost" size="icon" className="rounded-full" asChild>
-            <Link href="/browse">
-              <DiscAlbum />
-              <span className="sr-only">Browse Categories</span>
-            </Link>
-          </Button>
           <Button variant="ghost" size="icon" className="rounded-full" asChild>
             <Link href="/liked">
               <Heart />

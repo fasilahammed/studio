@@ -2,14 +2,16 @@ import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Music2 } from 'lucide-react';
 import type { Category } from '@/lib/types';
+import { cn } from '@/lib/utils';
 
 type CategoryCardProps = {
   category: Category;
+  small?: boolean;
 };
 
-export default function CategoryCard({ category }: CategoryCardProps) {
+export default function CategoryCard({ category, small = false }: CategoryCardProps) {
   return (
-    <Card className="group relative w-full overflow-hidden rounded-lg border-2 border-secondary bg-card transition-all duration-300 ease-in-out hover:border-primary hover:shadow-xl hover:shadow-primary/20">
+    <Card className="group relative w-full overflow-hidden rounded-lg border-2 border-transparent bg-card transition-all duration-300 ease-in-out hover:border-primary hover:shadow-lg hover:shadow-primary/20">
       <CardContent className="p-0">
         <div className="relative aspect-square">
           <Image
@@ -20,22 +22,17 @@ export default function CategoryCard({ category }: CategoryCardProps) {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
-          {/* CD Hole Effect */}
-          <div className="absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-background/30 ring-4 ring-black/30 backdrop-blur-sm transition-all duration-300 group-hover:h-24 group-hover:w-24">
-            <div className="absolute left-1/2 top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-background ring-2 ring-black/50" />
-          </div>
-
-          <div className="absolute bottom-4 left-4 right-4">
-            <h3 className="truncate font-headline text-xl font-bold">
+          <div className={cn("absolute bottom-4 left-4 right-4", small && "bottom-2 left-2 right-2")}>
+            <h3 className={cn("truncate font-headline text-xl font-bold", small && "text-base")}>
               {category.name}
             </h3>
-            <p className="truncate text-sm text-muted-foreground">
+             {!small && <p className="truncate text-sm text-muted-foreground">
               {category.description}
-            </p>
+            </p>}
           </div>
           
-          <div className="absolute right-4 top-4 rounded-full bg-black/40 p-2 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-             <Music2 className="h-5 w-5" />
+          <div className="absolute right-2 top-2 rounded-full bg-black/40 p-1 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+             <Music2 className="h-4 w-4" />
           </div>
         </div>
       </CardContent>

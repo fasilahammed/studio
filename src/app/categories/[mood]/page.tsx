@@ -30,7 +30,7 @@ export default async function CategoryPage({
             </p>
           </div>
            <Link
-              href="/browse"
+              href="/"
               className="text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               <ArrowLeft className="mr-2 inline h-4 w-4" />

@@ -1,31 +1,48 @@
-import MainContainer from '@/components/layout/main-container';
-import SongList from '@/components/song-list';
-import { getSongsByMood } from '@/lib/actions';
-import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { DiscAlbum } from 'lucide-react';
+import MainContainer from '@/components/layout/main-container';
+import CategoryCard from '@/components/category-card';
+import type { Category } from '@/lib/types';
+
+const categories: Category[] = [
+  {
+    name: 'Trending Now',
+    slug: 'trending',
+    description: 'The hottest tracks right now.',
+    coverImageUrl: 'https://picsum.photos/seed/cat1/600/600',
+  },
+  {
+    name: 'Feel Good Jams',
+    slug: 'feel-good',
+    description: 'Upbeat tunes to lift your spirits.',
+    coverImageUrl: 'https://picsum.photos/seed/cat2/600/600',
+  },
+  {
+    name: 'On The Road',
+    slug: 'traveling',
+    description: 'Perfect soundtrack for your journey.',
+    coverImageUrl: 'https://picsum.photos/seed/cat3/600/600',
+  },
+  {
+    name: 'Liked Songs',
+    slug: '/liked', // This is a direct link, not a category slug
+    description: 'Your personal collection of favorites.',
+    coverImageUrl: 'https://picsum.photos/seed/cat4/600/600',
+  },
+];
 
 export default async function Home({
   searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  // For now, we ignore search on the homepage and direct users to search via the search bar
-  // which will reload the page with query params.
+
   const searchQuery = (searchParams?.q as string) ?? '';
   const isSearching = !!searchQuery;
-
-  // In a real app, you might have a more complex search results page.
-  // For this demo, we'll just show trending if you land on home.
-  // The search bar in the header will trigger a reload with the `q` param.
-  const searchResults = await getSongsByMood(searchQuery, 20);
-
-  const trendingSongs = await getSongsByMood('trending', 5);
-  const feelGoodSongs = await getSongsByMood('feel-good', 5);
-  const travelingSongs = await getSongsByMood('traveling', 5);
-
+  
+  // If searching, we will show a different page, this can be improved later
   if (isSearching) {
-     return (
+    const searchResults = await getSongsByMood(searchQuery, 20);
+    return (
       <MainContainer>
         <section>
           <h1 className="mb-2 font-headline text-3xl font-bold tracking-tight md:text-4xl">
@@ -42,44 +59,24 @@ export default async function Home({
 
   return (
     <MainContainer>
-      <div className="space-y-12">
-        <section className="rounded-lg bg-card p-6 shadow-lg">
-          <div className="flex flex-col items-center text-center">
-            <h1 className="mb-2 font-headline text-3xl font-bold tracking-tight md:text-4xl">
-              Explore Your Sound
-            </h1>
-            <p className="mb-6 max-w-prose text-muted-foreground">
-              Dive into categories curated for every mood and moment. Click below to start your journey.
-            </p>
-            <Button asChild size="lg" className="rounded-full">
-              <Link href="/browse">
-                <DiscAlbum className="mr-2 h-5 w-5" />
-                Browse All Categories
-              </Link>
-            </Button>
-          </div>
-        </section>
+      <div className="mb-8">
+        <h1 className="mb-2 font-headline text-3xl font-bold tracking-tight md:text-4xl">
+          Browse All
+        </h1>
+        <p className="text-muted-foreground">
+          Explore music by category and mood.
+        </p>
+      </div>
 
-        <section>
-          <h2 className="mb-4 font-headline text-2xl font-bold tracking-tight md:text-3xl">
-            Trending Now
-          </h2>
-          <SongList songs={trendingSongs} />
-        </section>
-
-        <section>
-          <h2 className="mb-4 font-headline text-2xl font-bold tracking-tight md:text-3xl">
-            Feel Good Jams
-          </h2>
-          <SongList songs={feelGoodSongs} />
-        </section>
-
-        <section>
-          <h2 className="mb-4 font-headline text-2xl font-bold tracking-tight md:text-3xl">
-            On The Road
-          </h2>
-          <SongList songs={travelingSongs} />
-        </section>
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+        {categories.map((category) => {
+          const href = category.slug.startsWith('/') ? category.slug : `/categories/${category.slug}`;
+          return (
+             <Link href={href} key={category.slug}>
+              <CategoryCard category={category} small />
+            </Link>
+          )
+        })}
       </div>
     </MainContainer>
   );

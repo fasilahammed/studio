@@ -13,7 +13,7 @@ export default function CategoryCard({ category, small = false }: CategoryCardPr
   return (
     <Card className="group relative w-full overflow-hidden rounded-lg border-2 border-transparent bg-card transition-all duration-300 ease-in-out hover:border-primary hover:shadow-lg hover:shadow-primary/20">
       <CardContent className="p-0">
-        <div className="relative aspect-square">
+        <div className={cn("relative", small ? "aspect-square" : "aspect-video")}>
           <Image
             src={category.coverImageUrl}
             alt={category.name}
@@ -23,7 +23,7 @@ export default function CategoryCard({ category, small = false }: CategoryCardPr
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
           <div className={cn("absolute bottom-4 left-4 right-4", small && "bottom-2 left-2 right-2")}>
-            <h3 className={cn("truncate font-headline text-xl font-bold", small && "text-base")}>
+            <h3 className={cn("truncate font-headline text-xl font-bold", small && "text-sm")}>
               {category.name}
             </h3>
              {!small && <p className="truncate text-sm text-muted-foreground">

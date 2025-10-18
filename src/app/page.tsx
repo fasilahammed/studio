@@ -1,7 +1,10 @@
 import Link from 'next/link';
 import MainContainer from '@/components/layout/main-container';
 import CategoryCard from '@/components/category-card';
-import type { Category } from '@/lib/types';
+import type { Category, Song } from '@/lib/types';
+import { getSongsByMood } from '@/lib/actions';
+import SongCarousel from '@/components/song-carousel';
+import SongList from '@/components/song-list';
 
 const categories: Category[] = [
   {
@@ -30,54 +33,99 @@ const categories: Category[] = [
   },
 ];
 
+type HomeSectionProps = {
+  title: string;
+  description: string;
+  songs: Song[];
+};
+
+function HomeSection({ title, description, songs }: HomeSectionProps) {
+  return (
+    <section className="mb-12">
+      <div className="mb-4">
+        <h2 className="font-headline text-2xl font-bold tracking-tight">
+          {title}
+        </h2>
+        <p className="text-muted-foreground">{description}</p>
+      </div>
+      <SongCarousel songs={songs} />
+    </section>
+  );
+}
+
 export default async function Home({
   searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-
   const searchQuery = (searchParams?.q as string) ?? '';
   const isSearching = !!searchQuery;
-  
+
   // If searching, we will show a different page, this can be improved later
   if (isSearching) {
-    const searchResults = await getSongsByMood(searchQuery, 20);
+    const searchResults = await getSongsByMood(searchQuery, 20); // Using getSongsByMood for broader search
     return (
       <MainContainer>
         <section>
-          <h1 className="mb-2 font-headline text-3xl font-bold tracking-tight md:text-4xl">
-            Search Results
-          </h1>
-          <p className="mb-8 text-muted-foreground">
-            Showing results for "{searchQuery}"
-          </p>
+          <div className="mb-8">
+            <h1 className="mb-2 font-headline text-3xl font-bold tracking-tight md:text-4xl">
+              Search Results
+            </h1>
+            <p className="text-muted-foreground">
+              Showing results for "{searchQuery}"
+            </p>
+          </div>
           <SongList songs={searchResults} emptyStateMessage="No songs found." />
         </section>
       </MainContainer>
     );
   }
 
+  const trendingSongs = await getSongsByMood('trending', 10);
+  const feelGoodSongs = await getSongsByMood('feel-good', 10);
+  const travelingSongs = await getSongsByMood('traveling', 10);
+
   return (
     <MainContainer>
-      <div className="mb-8">
-        <h1 className="mb-2 font-headline text-3xl font-bold tracking-tight md:text-4xl">
-          Browse All
-        </h1>
-        <p className="text-muted-foreground">
-          Explore music by category and mood.
-        </p>
-      </div>
+      <section className="mb-12">
+        <div className="mb-6">
+          <h1 className="mb-2 font-headline text-3xl font-bold tracking-tight md:text-4xl">
+            Browse All
+          </h1>
+          <p className="text-muted-foreground">
+            Explore music by category and mood.
+          </p>
+        </div>
 
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-        {categories.map((category) => {
-          const href = category.slug.startsWith('/') ? category.slug : `/categories/${category.slug}`;
-          return (
-             <Link href={href} key={category.slug}>
-              <CategoryCard category={category} small />
-            </Link>
-          )
-        })}
-      </div>
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          {categories.map((category) => {
+            const href = category.slug.startsWith('/')
+              ? category.slug
+              : `/categories/${category.slug}`;
+            return (
+              <Link href={href} key={category.slug}>
+                <CategoryCard category={category} small />
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
+      <HomeSection
+        title="Trending Now"
+        description="The hottest tracks making waves right now."
+        songs={trendingSongs}
+      />
+      <HomeSection
+        title="Feel Good Jams"
+        description="Upbeat tunes to lift your spirits."
+        songs={feelGoodSongs}
+      />
+      <HomeSection
+        title="On The Road"
+        description="The perfect soundtrack for your journey."
+        songs={travelingSongs}
+      />
     </MainContainer>
   );
 }

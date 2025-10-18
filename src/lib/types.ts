@@ -12,5 +12,5 @@ export type Song = {
   title: string;
   artist: string;
   coverArt?: string;
-  audioUrl?: string;
+  audioUrl: string;
 };

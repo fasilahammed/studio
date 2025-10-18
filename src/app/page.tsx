@@ -1,6 +1,6 @@
 import MainContainer from '@/components/layout/main-container';
 import SongList from '@/components/song-list';
-import { searchSongs } from '@/lib/actions';
+import { searchSongs, getFeaturedSongs } from '@/lib/actions';
 
 export default async function Home({
   searchParams,
@@ -13,7 +13,7 @@ export default async function Home({
   // Fetch data: search results if a query exists, otherwise featured songs.
   const songs = isSearching 
     ? await searchSongs(searchQuery)
-    : await searchSongs('Dua Lipa');
+    : await getFeaturedSongs();
 
   return (
     <MainContainer>
@@ -31,12 +31,12 @@ export default async function Home({
         <div className="space-y-16">
           <section>
             <h1 className="mb-2 font-headline text-3xl font-bold tracking-tight md:text-4xl">
-              Trending Now
+              Featured Songs
             </h1>
             <p className="mb-8 text-muted-foreground">
-              Popular tracks making waves right now.
+              A selection of our favorite tracks.
             </p>
-            <SongList songs={songs.slice(0,10)} />
+            <SongList songs={songs} />
           </section>
         </div>
       )}

@@ -31,6 +31,30 @@ const categories: Category[] = [
     description: 'Your personal collection of favorites.',
     coverImageUrl: 'https://picsum.photos/seed/cat4/600/600',
   },
+   {
+    name: 'Chill Vibes',
+    slug: 'chill',
+    description: 'Relax and unwind with these tunes.',
+    coverImageUrl: 'https://picsum.photos/seed/cat5/600/600',
+  },
+  {
+    name: 'Energetic',
+    slug: 'energetic',
+    description: 'Get pumped up with these tracks.',
+    coverImageUrl: 'https://picsum.photos/seed/cat6/600/600',
+  },
+  {
+    name: 'Electronic',
+    slug: 'electronic',
+    description: 'Enter the world of electronic music.',
+    coverImageUrl: 'https://picsum.photos/seed/cat7/600/600',
+  },
+   {
+    name: 'Rock',
+    slug: 'rock',
+    description: 'Rock out with these classic and new hits.',
+    coverImageUrl: 'https://picsum.photos/seed/cat8/600/600',
+  },
 ];
 
 type HomeSectionProps = {
@@ -63,7 +87,7 @@ export default async function Home({
 
   // If searching, we will show a different page, this can be improved later
   if (isSearching) {
-    const searchResults = await getSongsByMood(searchQuery, 20); // Using getSongsByMood for broader search
+    const searchResults = await getSongsByMood(searchQuery, 50); // Using getSongsByMood for broader search
     return (
       <MainContainer>
         <section>
@@ -84,6 +108,10 @@ export default async function Home({
   const trendingSongs = await getSongsByMood('trending', 10);
   const feelGoodSongs = await getSongsByMood('feel-good', 10);
   const travelingSongs = await getSongsByMood('traveling', 10);
+  const chillSongs = await getSongsByMood('chill', 10);
+  const energeticSongs = await getSongsByMood('energetic', 10);
+  const electronicSongs = await getSongsByMood('electronic', 10);
+  const rockSongs = await getSongsByMood('rock', 10);
 
   return (
     <MainContainer>
@@ -125,6 +153,26 @@ export default async function Home({
         title="On The Road"
         description="The perfect soundtrack for your journey."
         songs={travelingSongs}
+      />
+       <HomeSection
+        title="Chill Vibes"
+        description="Relax and unwind with these tunes."
+        songs={chillSongs}
+      />
+      <HomeSection
+        title="Energetic"
+        description="Get pumped up with these tracks."
+        songs={energeticSongs}
+      />
+      <HomeSection
+        title="Electronic"
+        description="Enter the world of electronic music."
+        songs={electronicSongs}
+      />
+      <HomeSection
+        title="Rock"
+        description="Rock out with these classic and new hits."
+        songs={rockSongs}
       />
     </MainContainer>
   );

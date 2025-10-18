@@ -70,7 +70,7 @@ export async function searchSongs(query: string, limit: number = 20): Promise<So
   }
 
   // Fallback to searching by track name if artist search yields no results
-  const trackParams = new URLSearchParams({ t: query });
+  const trackParams = new URLSearchParams({ s: query });
   const trackData = await fetchFromTheAudioDB('searchtrack.php', trackParams);
   
   if (trackData && trackData.track) {
@@ -78,8 +78,4 @@ export async function searchSongs(query: string, limit: number = 20): Promise<So
   }
 
   return [];
-}
-
-export async function getFeaturedSongs(): Promise<Song[]> {
-  return searchSongs('Arijit Singh', 10);
 }

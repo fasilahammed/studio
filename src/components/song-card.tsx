@@ -13,7 +13,6 @@ import { playSong, toggleLikeSong } from '@/lib/features/player/player-slice';
 import { RootState } from '@/lib/store';
 import { useToast } from '@/hooks/use-toast';
 import AudioVisualizer from './audio-visualizer';
-import { Music } from 'lucide-react';
 
 type SongCardProps = {
   song: Song;
@@ -25,6 +24,10 @@ export default function SongCard({ song, playlist }: SongCardProps) {
   const { toast } = useToast();
   const { currentSong, isPlaying, likedSongs } = useSelector((state: RootState) => state.player);
   const [placeholder] = useState(getRandomPlaceholder);
+
+  if (!song || !song.id) {
+    return null;
+  }
 
   const isActive = currentSong?.id === song.id;
   const isLiked = likedSongs.some(s => s.id === song.id);

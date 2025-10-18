@@ -25,10 +25,6 @@ export default function SongCard({ song, playlist }: SongCardProps) {
   const { currentSong, isPlaying, likedSongs } = useSelector((state: RootState) => state.player);
   const [placeholder] = useState(getRandomPlaceholder);
 
-  if (!song || !song.id) {
-    return null;
-  }
-
   const isActive = currentSong?.id === song.id;
   const isLiked = likedSongs.some(s => s.id === song.id);
 

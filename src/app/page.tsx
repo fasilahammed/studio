@@ -5,6 +5,7 @@ import type { Category, Song } from '@/lib/types';
 import { getSongsByMood, searchSongs } from '@/lib/actions';
 import SongCarousel from '@/components/song-carousel';
 import SongList from '@/components/song-list';
+import MusicLayout from '@/components/layout/music-layout';
 
 const categories: Category[] = [
   {
@@ -85,35 +86,7 @@ export default async function Home({
   const searchQuery = (searchParams?.q as string) ?? '';
   const isSearching = !!searchQuery;
 
-  // If searching, we will show a different page, this can be improved later
-  if (isSearching) {
-    const searchResults = await searchSongs(searchQuery, 50);
-    return (
-      <MainContainer>
-        <section>
-          <div className="mb-8">
-            <h1 className="mb-2 font-headline text-3xl font-bold tracking-tight md:text-4xl">
-              Search Results
-            </h1>
-            <p className="text-muted-foreground">
-              Showing results for "{searchQuery}"
-            </p>
-          </div>
-          <SongList songs={searchResults} emptyStateMessage="No songs found." />
-        </section>
-      </MainContainer>
-    );
-  }
-
-  const trendingSongs = await getSongsByMood('trending', 10);
-  const feelGoodSongs = await getSongsByMood('feel-good', 10);
-  const travelingSongs = await getSongsByMood('traveling', 10);
-  const chillSongs = await getSongsByMood('chill', 10);
-  const energeticSongs = await getSongsByMood('energetic', 10);
-  const electronicSongs = await getSongsByMood('electronic', 10);
-  const rockSongs = await getSongsByMood('rock', 10);
-
-  return (
+  const pageContent = (
     <MainContainer>
       <section className="mb-12">
         <div className="mb-6">
@@ -142,38 +115,66 @@ export default async function Home({
       <HomeSection
         title="Trending Now"
         description="The hottest tracks making waves right now."
-        songs={trendingSongs}
+        songs={await getSongsByMood('trending', 10)}
       />
       <HomeSection
         title="Feel Good Jams"
         description="Upbeat tunes to lift your spirits."
-        songs={feelGoodSongs}
+        songs={await getSongsByMood('feel-good', 10)}
       />
       <HomeSection
         title="On The Road"
         description="The perfect soundtrack for your journey."
-        songs={travelingSongs}
+        songs={await getSongsByMood('traveling', 10)}
       />
        <HomeSection
         title="Chill Vibes"
         description="Relax and unwind with these tunes."
-        songs={chillSongs}
+        songs={await getSongsByMood('chill', 10)}
       />
       <HomeSection
         title="Energetic"
         description="Get pumped up with these tracks."
-        songs={energeticSongs}
+        songs={await getSongsByMood('energetic', 10)}
       />
       <HomeSection
         title="Electronic"
         description="Enter the world of electronic music."
-        songs={electronicSongs}
+        songs={await getSongsByMood('electronic', 10)}
       />
       <HomeSection
         title="Rock"
         description="Rock out with these classic and new hits."
-        songs={rockSongs}
+        songs={await getSongsByMood('rock', 10)}
       />
     </MainContainer>
+  );
+
+  // If searching, we will show a different page, this can be improved later
+  if (isSearching) {
+    const searchResults = await searchSongs(searchQuery, 50);
+    return (
+       <MusicLayout>
+        <MainContainer>
+          <section>
+            <div className="mb-8">
+              <h1 className="mb-2 font-headline text-3xl font-bold tracking-tight md:text-4xl">
+                Search Results
+              </h1>
+              <p className="text-muted-foreground">
+                Showing results for "{searchQuery}"
+              </p>
+            </div>
+            <SongList songs={searchResults} emptyStateMessage="No songs found." />
+          </section>
+        </MainContainer>
+      </MusicLayout>
+    );
+  }
+
+  return (
+    <MusicLayout>
+      {pageContent}
+    </MusicLayout>
   );
 }

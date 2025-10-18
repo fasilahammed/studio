@@ -18,7 +18,7 @@ export default function SongList({ songs, emptyStateMessage = "No songs to displ
   return (
     <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
       {songs.map((song) => (
-        <SongCard key={song.id} song={song} />
+        <SongCard key={song.id} song={song} playlist={songs} />
       ))}
     </div>
   );

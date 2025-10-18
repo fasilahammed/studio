@@ -15,9 +15,10 @@ import { useToast } from '@/hooks/use-toast';
 
 type SongCardProps = {
   song: Song;
+  playlist: Song[];
 };
 
-export default function SongCard({ song }: SongCardProps) {
+export default function SongCard({ song, playlist }: SongCardProps) {
   const dispatch = useDispatch();
   const { toast } = useToast();
   const { currentSong, isPlaying, likedSongs } = useSelector((state: RootState) => state.player);
@@ -27,7 +28,7 @@ export default function SongCard({ song }: SongCardProps) {
   const isLiked = likedSongs.some(s => s.id === song.id);
 
   const handlePlayClick = () => {
-    dispatch(playSong(song));
+    dispatch(playSong({ song, playlist }));
   };
   
   const handleLikeClick = (e: React.MouseEvent) => {

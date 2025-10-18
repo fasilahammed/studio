@@ -12,6 +12,8 @@ const mapToSong = (recording: MusicBrainzRecording): Song => ({
   id: recording.id,
   title: recording.title,
   artist: getArtistName(recording),
+  // Add a placeholder audio URL. In a real app, this would come from an audio provider.
+  audioUrl: 'https://storage.googleapis.com/studiopa-prod.appspot.com/64483a65-5d71-4191-8935-266162394c8e/assets/a2d3c922-b236-4c40-8b1b-90a612502c38/placeholder.mp3'
 });
 
 const fetchFromMusicBrainz = async (path: string, params: URLSearchParams): Promise<any> => {
@@ -20,7 +22,7 @@ const fetchFromMusicBrainz = async (path: string, params: URLSearchParams): Prom
     const res = await fetch(url, {
       headers: {
         'Accept': 'application/json',
-        'User-Agent': 'MelodiaVerse/1.0 (https://melodiaverse.app/contact)',
+        'User-Agent': 'LoomIG/1.0 ( developer@email.com )',
       },
       next: { revalidate: 3600 }, // Revalidate once per hour
     });

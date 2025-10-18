@@ -6,7 +6,7 @@ export type MusicBrainzArtistCredit = {
   };
   
   export type MusicBrainzRecording = {
-    id: string;
+    id:string;
     title: string;
     'artist-credit': MusicBrainzArtistCredit[];
     releases?: { 
@@ -23,5 +23,6 @@ export type MusicBrainzArtistCredit = {
     title: string;
     artist: string;
     coverArt?: string;
+    audioUrl?: string; // Add audioUrl to the Song type
   };
   

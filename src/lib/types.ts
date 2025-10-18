@@ -13,4 +13,5 @@ export type Song = {
   artist: string;
   coverArt?: string;
   audioUrl: string;
+  moods?: string[];
 };

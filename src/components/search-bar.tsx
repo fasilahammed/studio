@@ -8,10 +8,10 @@ export function SearchBar() {
         type="search"
         name="q"
         placeholder="Search songs, artists..."
-        className="h-9 w-full rounded-full border-none bg-secondary pl-10 pr-4 text-sm focus-visible:ring-2 focus-visible:ring-primary/50"
+        className="h-10 w-full rounded-full border-2 border-secondary bg-transparent pl-12 pr-4 text-base focus-visible:border-primary/60 focus-visible:ring-0"
       />
-      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-        <Search className="h-4 w-4 text-muted-foreground" />
+      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+        <Search className="h-5 w-5 text-muted-foreground" />
       </div>
     </form>
   );

@@ -5,9 +5,9 @@ import { searchSongs } from '@/lib/actions';
 export default async function Home({
   searchParams,
 }: {
-  searchParams?: { q?: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const searchQuery = searchParams?.q ?? '';
+  const searchQuery = (searchParams?.q as string) ?? '';
   const isSearching = !!searchQuery;
 
   // Fetch data in parallel

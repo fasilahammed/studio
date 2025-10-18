@@ -4,9 +4,15 @@ import Header from '@/components/layout/header';
 import MusicPlayer from '@/components/music-player';
 import './globals.css';
 import StoreProvider from '@/lib/StoreProvider';
+import { Space_Grotesk } from 'next/font/google'
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-space-grotesk',
+})
 
 export const metadata: Metadata = {
-  title: 'LoomIG',
+  title: 'MelodiaVerse',
   description: 'Discover your next favorite song.',
 };
 
@@ -17,12 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
-      </head>
-      <body className="font-body antialiased">
+      <body className={`${spaceGrotesk.variable} font-body antialiased`}>
           <StoreProvider>
             <div className="relative min-h-screen bg-background text-foreground">
                <div className="absolute inset-0 z-0 h-full w-full bg-background bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(229,72,72,0.2),rgba(255,255,255,0))]"></div>

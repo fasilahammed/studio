@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { Music, Play, Heart } from 'lucide-react';
+import { Music, Play, Heart, ListMusic } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import type { Song } from '@/lib/types';
@@ -12,6 +12,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { playSong, toggleLikeSong } from '@/lib/features/player/player-slice';
 import { RootState } from '@/lib/store';
 import { useToast } from '@/hooks/use-toast';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 type SongCardProps = {
   song: Song;
@@ -34,16 +44,19 @@ export default function SongCard({ song }: SongCardProps) {
     e.stopPropagation();
     const wasLiked = isLiked;
     dispatch(toggleLikeSong(song));
-    if (wasLiked) {
-      toast({ title: "Removed from Liked Songs", description: `"${song.title}" by ${song.artist}` });
-    } else {
-      toast({ title: "Added to Liked Songs", description: `"${song.title}" by ${song.artist}` });
-    }
+    toast({ 
+      title: wasLiked ? "Removed from Liked Songs" : "Added to Liked Songs", 
+      description: `"${song.title}" by ${song.artist}` 
+    });
+  };
+
+  const handlePlaylistClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
   };
 
   return (
     <>
-      <Card className="group relative w-full overflow-hidden border-none bg-card transition-all duration-300 ease-in-out hover:bg-secondary/60">
+      <Card className="group relative w-full overflow-hidden rounded-lg border-none bg-card transition-all duration-300 ease-in-out hover:bg-secondary/60">
         <CardContent className="p-0">
           <div className="relative aspect-square">
             <Image
@@ -57,27 +70,52 @@ export default function SongCard({ song }: SongCardProps) {
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
             <Button
-              variant="ghost"
+              variant="default"
               size="icon"
-              className="absolute right-2 top-2 h-8 w-8 rounded-full bg-black/30 text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 hover:bg-primary"
+              className="absolute bottom-4 right-4 h-12 w-12 rounded-full bg-primary/80 shadow-lg backdrop-blur-sm transition-all duration-300 group-hover:bg-primary group-hover:shadow-primary/40"
               onClick={handlePlayClick}
             >
-              <Play className="h-5 w-5" />
+              <Play className="h-6 w-6 fill-current" />
             </Button>
             
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleLikeClick}
-              className={cn(
-                "absolute left-2 top-2 h-8 w-8 rounded-full bg-black/30 text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 hover:bg-primary",
-                isLiked && "text-red-500 hover:text-red-400 opacity-100"
-              )}
-            >
-              <Heart className={cn("h-5 w-5", isLiked && "fill-current")} />
-            </Button>
+            <div className="absolute left-2 top-2 flex flex-col gap-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleLikeClick}
+                className={cn(
+                  "h-8 w-8 rounded-full bg-black/30 text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 hover:bg-primary",
+                  isLiked && "text-red-500 hover:text-red-400 opacity-100"
+                )}
+              >
+                <Heart className={cn("h-5 w-5", isLiked && "fill-current")} />
+              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handlePlaylistClick}
+                    className="h-8 w-8 rounded-full bg-black/30 text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 hover:bg-primary"
+                  >
+                    <ListMusic className="h-5 w-5" />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>AI Playlist Generation</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This feature is coming soon! Our AI will analyze the tempo, mood, and genre of "{song.title}" to create a personalized playlist of similar tracks for you.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogAction>Got it!</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
 
-            <div className="absolute bottom-4 left-4 right-4">
+            <div className="absolute bottom-4 left-4 right-20">
               <h3 className="truncate font-headline text-lg font-bold">
                 {song.title}
               </h3>

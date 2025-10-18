@@ -13,9 +13,9 @@ export default async function Home({
   // Fetch data in parallel
   const [searchResults, featuredSongs, popSongs, rockSongs] = await Promise.all([
     isSearching ? searchSongs(searchQuery) : Promise.resolve([]),
-    isSearching ? Promise.resolve([]) : searchSongs('artist:"Arijit Singh"', 5),
-    isSearching ? Promise.resolve([]) : searchSongs('tag:pop', 5),
-    isSearching ? Promise.resolve([]) : searchSongs('tag:rock', 5),
+    isSearching ? Promise.resolve([]) : searchSongs('Arijit Singh'),
+    isSearching ? Promise.resolve([]) : searchSongs('Dua Lipa'),
+    isSearching ? Promise.resolve([]) : searchSongs('Linkin Park'),
   ]);
 
   return (
@@ -39,7 +39,7 @@ export default async function Home({
             <p className="mb-8 text-muted-foreground">
               A selection of popular tracks by Arijit Singh
             </p>
-            <SongList songs={featuredSongs} />
+            <SongList songs={featuredSongs.slice(0,5)} />
           </section>
            <section>
             <h2 className="mb-2 font-headline text-3xl font-bold tracking-tight md:text-4xl">
@@ -48,7 +48,7 @@ export default async function Home({
             <p className="mb-8 text-muted-foreground">
               Trending pop songs you might like.
             </p>
-            <SongList songs={popSongs} />
+            <SongList songs={popSongs.slice(0,5)} />
           </section>
           <section>
             <h2 className="mb-2 font-headline text-3xl font-bold tracking-tight md:text-4xl">
@@ -57,7 +57,7 @@ export default async function Home({
             <p className="mb-8 text-muted-foreground">
               Must-listen rock anthems.
             </p>
-            <SongList songs={rockSongs} />
+            <SongList songs={rockSongs.slice(0,5)} />
           </section>
         </div>
       )}

@@ -1,28 +1,16 @@
-export type MusicBrainzArtistCredit = {
-    artist: {
-      id: string;
-      name: string;
-    };
-  };
-  
-  export type MusicBrainzRecording = {
-    id:string;
-    title: string;
-    'artist-credit': MusicBrainzArtistCredit[];
-    releases?: { 
-      'cover-art-archive'?: { 
-        front: boolean;
-        artwork: boolean;
-        id: string;
-      } 
-    }[];
-  };
-  
-  export type Song = {
-    id: string;
-    title: string;
-    artist: string;
-    coverArt?: string;
-    audioUrl?: string; // Add audioUrl to the Song type
-  };
-  
+export type AudioDbTrack = {
+  idTrack: string;
+  strTrack: string;
+  strArtist: string;
+  strAlbum: string;
+  strTrackThumb?: string; // Cover art
+  strMusicVid?: string; // Music video URL
+};
+
+export type Song = {
+  id: string;
+  title: string;
+  artist: string;
+  coverArt?: string;
+  audioUrl?: string;
+};

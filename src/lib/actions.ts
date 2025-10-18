@@ -1,6 +1,6 @@
 'use server';
 
-import type { Song, MusicBrainzRecording } from '@/lib/types';
+import type { Song, AudioDbTrack } from '@/lib/types';
 
 // A list of different placeholder audio URLs to simulate playing different songs.
 const placeholderAudioUrls = [
@@ -14,38 +14,34 @@ const getRandomAudioUrl = () => {
   return placeholderAudioUrls[Math.floor(Math.random() * placeholderAudioUrls.length)];
 };
 
-// Function to safely extract artist name
-const getArtistName = (recording: MusicBrainzRecording): string => {
-  return recording['artist-credit']?.[0]?.artist?.name || 'Unknown Artist';
-};
-
-// Function to map MusicBrainz recordings to our Song type
-const mapToSong = (recording: MusicBrainzRecording): Song => ({
-  id: recording.id,
-  title: recording.title,
-  artist: getArtistName(recording),
-  // Assign a random placeholder audio URL. In a real app, this would come from an audio provider.
-  audioUrl: getRandomAudioUrl(),
+// Function to map AudioDB tracks to our Song type
+const mapToSong = (track: AudioDbTrack): Song => ({
+  id: track.idTrack,
+  title: track.strTrack,
+  artist: track.strArtist,
+  // Assign a random placeholder audio URL. TheAudioDB sometimes provides a music video link, but not direct audio.
+  audioUrl: track.strMusicVid ?? getRandomAudioUrl(),
+  coverArt: track.strTrackThumb
 });
 
-const fetchFromMusicBrainz = async (path: string, params: URLSearchParams): Promise<any> => {
-  const url = `https://musicbrainz.org/ws/2/${path}?${params.toString()}`;
+const fetchFromTheAudioDB = async (path: string, params: URLSearchParams): Promise<any> => {
+  const API_KEY = '2'; // TheAudioDB free API key
+  const url = `https://www.theaudiodb.com/api/v1/json/${API_KEY}/${path}?${params.toString()}`;
   try {
     const res = await fetch(url, {
       headers: {
         'Accept': 'application/json',
-        'User-Agent': 'LoomIG/1.0 ( developer@email.com )',
       },
       next: { revalidate: 3600 }, // Revalidate once per hour
     });
 
     if (!res.ok) {
-      console.error(`MusicBrainz API error: ${res.status} ${res.statusText}`);
+      console.error(`TheAudioDB API error: ${res.status} ${res.statusText}`);
       return null;
     }
     return res.json();
   } catch (error) {
-    console.error('Failed to fetch from MusicBrainz API:', error);
+    console.error('Failed to fetch from TheAudioDB API:', error);
     return null;
   }
 }
@@ -53,22 +49,33 @@ const fetchFromMusicBrainz = async (path: string, params: URLSearchParams): Prom
 export async function searchSongs(query: string, limit: number = 20): Promise<Song[]> {
   if (!query) return [];
   
+  // TheAudioDB's search endpoint is simpler. We'll search by track name.
+  // It doesn't support complex queries like MusicBrainz.
   const params = new URLSearchParams({
-    query: query,
-    limit: limit.toString(),
-    fmt: 'json'
+    t: query
   });
 
-  const data = await fetchFromMusicBrainz('recording', params);
+  const data = await fetchFromTheAudioDB('searchtrack.php', params);
   
-  if (!data || !data.recordings) {
-    return [];
+  if (!data || !data.track) {
+    // If track search fails, let's try searching by artist as a fallback
+    const artistParams = new URLSearchParams({ s: query });
+    const artistData = await fetchFromTheAudioDB('search.php', artistParams);
+    if (!artistData || !artistData.artists) return [];
+
+    // If artist found, get their top tracks
+    const artistId = artistData.artists[0].idArtist;
+    const topTracksParams = new URLSearchParams({ i: artistId });
+    const topTracksData = await fetchFromTheAudioDB('track-top10.php', topTracksParams);
+    
+    if (!topTracksData || !topTracksData.track) return [];
+    return topTracksData.track.slice(0, limit).map(mapToSong);
   }
 
-  return data.recordings.map(mapToSong);
+  return data.track.slice(0, limit).map(mapToSong);
 }
 
 export async function getFeaturedSongs(): Promise<Song[]> {
   // Replicating user's original request for "arijit singh"
-  return searchSongs('artist:"Arijit Singh" AND country:IN', 10);
+  return searchSongs('Arijit Singh', 10);
 }

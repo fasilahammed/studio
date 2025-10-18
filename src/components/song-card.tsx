@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { Music, Play, Heart } from 'lucide-react';
+import { Play, Heart } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import type { Song } from '@/lib/types';
@@ -12,6 +12,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { playSong, toggleLikeSong } from '@/lib/features/player/player-slice';
 import { RootState } from '@/lib/store';
 import { useToast } from '@/hooks/use-toast';
+import AudioVisualizer from './audio-visualizer';
+import { Music } from 'lucide-react';
 
 type SongCardProps = {
   song: Song;
@@ -41,25 +43,28 @@ export default function SongCard({ song, playlist }: SongCardProps) {
     });
   };
 
+  const imageUrl = song.coverArt || placeholder.imageUrl;
+
   return (
     <>
       <Card className="group relative w-full overflow-hidden rounded-lg border-none bg-card transition-all duration-300 ease-in-out hover:bg-secondary/60">
         <CardContent className="p-0">
           <div className="relative aspect-square">
             <Image
-              src={placeholder.imageUrl}
+              src={imageUrl}
               alt={song.title}
               width={400}
               height={400}
               className="object-cover transition-transform duration-300 group-hover:scale-110"
               data-ai-hint={placeholder.imageHint}
+              unoptimized // Required for external URLs that aren't configured in next.config.js
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
             <Button
               variant="default"
               size="icon"
-              className="absolute bottom-4 right-4 h-12 w-12 rounded-full bg-primary/80 shadow-lg backdrop-blur-sm transition-all duration-300 group-hover:bg-primary group-hover:shadow-primary/40"
+              className="absolute bottom-4 right-4 h-12 w-12 scale-0 rounded-full bg-primary/80 shadow-lg backdrop-blur-sm transition-all duration-300 group-hover:scale-100 group-hover:bg-primary group-hover:shadow-primary/40"
               onClick={handlePlayClick}
             >
               <Play className="h-6 w-6 fill-current" />
@@ -72,7 +77,7 @@ export default function SongCard({ song, playlist }: SongCardProps) {
                 onClick={handleLikeClick}
                 className={cn(
                   "h-8 w-8 rounded-full bg-black/30 text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 hover:bg-primary",
-                  isLiked && "text-red-500 hover:text-red-400 opacity-100"
+                  isLiked && "text-primary hover:text-primary/80 opacity-100"
                 )}
               >
                 <Heart className={cn("h-5 w-5", isLiked && "fill-current")} />
@@ -91,7 +96,7 @@ export default function SongCard({ song, playlist }: SongCardProps) {
             {isActive && (
               <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm">
                 {isPlaying ? (
-                  <Music className="h-10 w-10 animate-pulse text-primary" />
+                  <AudioVisualizer isPlaying={true} />
                 ) : (
                   <Play className="h-10 w-10 text-primary" />
                 )}

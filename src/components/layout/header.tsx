@@ -1,8 +1,6 @@
 import Link from 'next/link';
 import { Logo } from '@/components/icons';
 import { SearchBar } from '@/components/search-bar';
-import { Button } from '../ui/button';
-import { Heart } from 'lucide-react';
 
 export default function Header() {
   return (

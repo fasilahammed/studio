@@ -5,6 +5,7 @@ import MusicPlayer from '@/components/music-player';
 import './globals.css';
 import StoreProvider from '@/lib/StoreProvider';
 import { Space_Grotesk } from 'next/font/google'
+import NowPlayingCard from '@/components/now-playing-card';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -30,6 +31,7 @@ export default function RootLayout({
               <div className="relative z-10 flex min-h-screen flex-col">
                 <Header />
                 <main className="flex-grow">{children}</main>
+                <NowPlayingCard />
                 <MusicPlayer />
               </div>
             </div>

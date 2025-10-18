@@ -37,29 +37,39 @@ export default function MusicPlayer() {
   useEffect(() => {
     if (currentSong) {
       setPlaceholder(getRandomPlaceholder());
+      // Reset state for new song
       setProgress(0);
-      if (audioRef.current && currentSong.audioUrl) {
+      setCurrentTime(0);
+      setDuration(0);
+      
+      if (audioRef.current) {
+        if (currentSong.audioUrl) {
           audioRef.current.src = currentSong.audioUrl;
           audioRef.current.load();
+          if (isPlaying) {
+            audioRef.current.play().catch(error => console.error("Error playing audio:", error));
+          }
+        }
       }
     }
   }, [currentSong]);
   
   useEffect(() => {
-    if (audioRef.current) {
+    const audioElement = audioRef.current;
+    if (audioElement) {
         if (isPlaying) {
-            audioRef.current.play().catch(error => console.error("Error playing audio:", error));
+            audioElement.play().catch(error => console.error("Error playing audio:", error));
         } else {
-            audioRef.current.pause();
+            audioElement.pause();
         }
     }
-  }, [isPlaying, currentSong]);
+  }, [isPlaying]);
 
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = isMuted ? 0 : volume;
     }
-  }, [volume, isMuted, currentSong]);
+  }, [volume, isMuted]);
 
 
   const handleTimeUpdate = () => {
@@ -114,6 +124,7 @@ export default function MusicPlayer() {
   return (
     <>
       <audio 
+        key={currentSong.id}
         ref={audioRef}
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}

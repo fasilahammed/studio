@@ -7,6 +7,8 @@ import {
   SkipBack,
   SkipForward,
   Volume2,
+  Volume1,
+  VolumeX,
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Progress } from './ui/progress';
@@ -27,6 +29,8 @@ export default function MusicPlayer() {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [placeholder, setPlaceholder] = useState<ImagePlaceholder | null>(null);
+  const [volume, setVolume] = useState(0.7);
+  const [isMuted, setIsMuted] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -40,7 +44,7 @@ export default function MusicPlayer() {
       }
     }
   }, [currentSong]);
-
+  
   useEffect(() => {
     if (audioRef.current) {
         if (isPlaying) {
@@ -50,6 +54,12 @@ export default function MusicPlayer() {
         }
     }
   }, [isPlaying, currentSong]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = isMuted ? 0 : volume;
+    }
+  }, [volume, isMuted, currentSong]);
 
 
   const handleTimeUpdate = () => {
@@ -73,13 +83,33 @@ export default function MusicPlayer() {
     return null;
   }
 
-  const handleProgressChange = (value: number) => {
+  const handleProgressChange = (e: React.MouseEvent<HTMLDivElement>) => {
     if (audioRef.current) {
-      const newTime = (value / 100) * duration;
+      const rect = e.currentTarget.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const percentage = (clickX / rect.width);
+      const newTime = percentage * duration;
       audioRef.current.currentTime = newTime;
-      setProgress(value);
+      setProgress(percentage * 100);
     }
   };
+
+  const handleVolumeChange = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const newVolume = clickX / rect.width;
+    const clampedVolume = Math.max(0, Math.min(1, newVolume));
+    setVolume(clampedVolume);
+    if (isMuted) {
+      setIsMuted(false);
+    }
+  };
+
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+  };
+
+  const VolumeIcon = isMuted || volume === 0 ? VolumeX : volume < 0.5 ? Volume1 : Volume2;
 
   return (
     <>
@@ -146,13 +176,8 @@ export default function MusicPlayer() {
               <span className="text-xs text-muted-foreground">{formatTime(currentTime)}</span>
               <Progress 
                 value={progress} 
-                className="h-1.5"
-                onPointerDown={(e) => {
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  const clickX = e.clientX - rect.left;
-                  const percentage = (clickX / rect.width) * 100;
-                  handleProgressChange(percentage);
-                }}
+                className="h-1.5 cursor-pointer"
+                onPointerDown={handleProgressChange}
               />
               <span className="text-xs text-muted-foreground">{formatTime(duration)}</span>
             </div>
@@ -160,8 +185,14 @@ export default function MusicPlayer() {
 
           <div className="hidden items-center gap-2 md:flex" style={{ minWidth: '200px', justifyContent: 'flex-end' }}>
             <AudioVisualizer isPlaying={isPlaying} />
-            <Volume2 className="h-5 w-5 text-muted-foreground" />
-            <Progress value={70} className="h-1.5 w-24" />
+            <Button variant="ghost" size="icon" onClick={toggleMute} className="h-10 w-10 text-muted-foreground">
+              <VolumeIcon className="h-5 w-5" />
+            </Button>
+            <Progress 
+              value={isMuted ? 0 : volume * 100} 
+              className="h-1.5 w-24 cursor-pointer" 
+              onPointerDown={handleVolumeChange}
+            />
           </div>
         </div>
       </footer>

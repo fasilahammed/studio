@@ -2,7 +2,7 @@ import Link from 'next/link';
 import MainContainer from '@/components/layout/main-container';
 import CategoryCard from '@/components/category-card';
 import type { Category, Song } from '@/lib/types';
-import { getSongsByMood } from '@/lib/actions';
+import { getSongsByMood, searchSongs } from '@/lib/actions';
 import SongCarousel from '@/components/song-carousel';
 import SongList from '@/components/song-list';
 
@@ -87,7 +87,7 @@ export default async function Home({
 
   // If searching, we will show a different page, this can be improved later
   if (isSearching) {
-    const searchResults = await getSongsByMood(searchQuery, 50); // Using getSongsByMood for broader search
+    const searchResults = await searchSongs(searchQuery, 50);
     return (
       <MainContainer>
         <section>

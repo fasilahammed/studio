@@ -19,7 +19,6 @@ const mapToSong = (track: AudioDbTrack): Song => ({
   id: track.idTrack,
   title: track.strTrack,
   artist: track.strArtist,
-  // Assign a random placeholder audio URL. TheAudioDB sometimes provides a music video link, but not direct audio.
   audioUrl: track.strMusicVid ?? getRandomAudioUrl(),
   coverArt: track.strTrackThumb
 });
@@ -40,10 +39,9 @@ const fetchFromTheAudioDB = async (path: string, params: URLSearchParams): Promi
       return null;
     }
     
-    // TheAudioDB can return an empty body for "not found" cases, which causes JSON.parse to fail.
     const text = await res.text();
     if (!text) {
-        return null; // Return null if the response body is empty.
+        return null; 
     }
     return JSON.parse(text);
 
@@ -56,33 +54,32 @@ const fetchFromTheAudioDB = async (path: string, params: URLSearchParams): Promi
 export async function searchSongs(query: string, limit: number = 20): Promise<Song[]> {
   if (!query) return [];
   
-  // TheAudioDB's search endpoint is simpler. We'll search by track name.
-  // It doesn't support complex queries like MusicBrainz.
-  const params = new URLSearchParams({
-    t: query
-  });
+  // First, search for the artist
+  const artistParams = new URLSearchParams({ s: query });
+  const artistData = await fetchFromTheAudioDB('search.php', artistParams);
 
-  const data = await fetchFromTheAudioDB('searchtrack.php', params);
-  
-  if (!data || !data.track) {
-    // If track search fails, let's try searching by artist as a fallback
-    const artistParams = new URLSearchParams({ s: query });
-    const artistData = await fetchFromTheAudioDB('search.php', artistParams);
-    if (!artistData || !artistData.artists) return [];
-
+  if (artistData && artistData.artists) {
     // If artist found, get their top tracks
     const artistId = artistData.artists[0].idArtist;
     const topTracksParams = new URLSearchParams({ i: artistId });
     const topTracksData = await fetchFromTheAudioDB('track-top10.php', topTracksParams);
     
-    if (!topTracksData || !topTracksData.track) return [];
-    return topTracksData.track.slice(0, limit).map(mapToSong);
+    if (topTracksData && topTracksData.track) {
+      return topTracksData.track.slice(0, limit).map(mapToSong);
+    }
   }
 
-  return data.track.slice(0, limit).map(mapToSong);
+  // Fallback to searching by track name if artist search yields no results
+  const trackParams = new URLSearchParams({ t: query });
+  const trackData = await fetchFromTheAudioDB('searchtrack.php', trackParams);
+  
+  if (trackData && trackData.track) {
+    return trackData.track.slice(0, limit).map(mapToSong);
+  }
+
+  return [];
 }
 
 export async function getFeaturedSongs(): Promise<Song[]> {
-  // Replicating user's original request for "arijit singh"
   return searchSongs('Arijit Singh', 10);
 }

@@ -13,9 +13,9 @@ export default async function Home({
   // Fetch data in parallel
   const [searchResults, featuredSongs, popSongs, rockSongs] = await Promise.all([
     isSearching ? searchSongs(searchQuery) : Promise.resolve([]),
-    isSearching ? Promise.resolve([]) : searchSongs('Trending'),
-    isSearching ? Promise.resolve([]) : searchSongs('Pop'),
-    isSearching ? Promise.resolve([]) : searchSongs('Rock'),
+    isSearching ? Promise.resolve([]) : searchSongs('Dua Lipa'),
+    isSearching ? Promise.resolve([]) : searchSongs('Ed Sheeran'),
+    isSearching ? Promise.resolve([]) : searchSongs('Linkin Park'),
   ]);
 
   return (

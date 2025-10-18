@@ -18,12 +18,6 @@ export default function Header() {
           <div className="hidden w-full max-w-xs sm:block">
             <SearchBar />
           </div>
-          <Button variant="ghost" size="icon" className="rounded-full" asChild>
-            <Link href="/liked">
-              <Heart />
-              <span className="sr-only">Liked Songs</span>
-            </Link>
-          </Button>
         </div>
       </div>
        <div className="container mx-auto px-4 pb-4 sm:hidden">

@@ -7,7 +7,9 @@ type SongListProps = {
 };
 
 export default function SongList({ songs, emptyStateMessage = "No songs to display." }: SongListProps) {
-  const validSongs = songs.filter(song => song && song.id);
+  // The filter was too aggressive and removed all songs. 
+  // The check for validity should happen at the point of use or be less strict.
+  const validSongs = songs.filter(song => song);
 
   if (validSongs.length === 0) {
     return (
@@ -20,7 +22,7 @@ export default function SongList({ songs, emptyStateMessage = "No songs to displ
   return (
     <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
       {validSongs.map((song) => (
-        <SongCard key={song.id} song={song} playlist={validSongs} />
+        <SongCard key={song.id || song.title} song={song} playlist={validSongs} />
       ))}
     </div>
   );

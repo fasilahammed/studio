@@ -15,3 +15,10 @@ export type Song = {
   audioUrl: string;
   moods?: string[];
 };
+
+export type Category = {
+  name: string;
+  slug: string;
+  description: string;
+  coverImageUrl: string;
+};

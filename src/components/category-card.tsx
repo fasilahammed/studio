@@ -11,7 +11,7 @@ type CategoryCardProps = {
 
 export default function CategoryCard({ category, small = false }: CategoryCardProps) {
   return (
-    <Card className="group relative w-full overflow-hidden rounded-lg border-2 border-transparent bg-card transition-all duration-300 ease-in-out hover:border-primary hover:shadow-lg hover:shadow-primary/20">
+    <Card className="group relative w-full overflow-hidden rounded-lg border-none bg-card transition-all duration-300 ease-in-out hover:bg-secondary/60">
       <CardContent className="p-0">
         <div className={cn("relative", small ? "aspect-square" : "aspect-video")}>
           <Image
@@ -22,17 +22,10 @@ export default function CategoryCard({ category, small = false }: CategoryCardPr
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
-          <div className={cn("absolute bottom-4 left-4 right-4", small && "bottom-2 left-2 right-2")}>
-            <h3 className={cn("truncate font-headline text-xl font-bold", small && "text-sm")}>
+          <div className="absolute inset-0 flex items-center justify-center p-2">
+            <h3 className="text-center font-headline text-lg font-bold text-white">
               {category.name}
             </h3>
-             {!small && <p className="truncate text-sm text-muted-foreground">
-              {category.description}
-            </p>}
-          </div>
-          
-          <div className="absolute right-2 top-2 rounded-full bg-black/40 p-1 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-             <Music2 className="h-4 w-4" />
           </div>
         </div>
       </CardContent>

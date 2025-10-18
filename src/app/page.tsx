@@ -10,13 +10,10 @@ export default async function Home({
   const searchQuery = (searchParams?.q as string) ?? '';
   const isSearching = !!searchQuery;
 
-  // Fetch data in parallel
-  const [searchResults, featuredSongs, popSongs, rockSongs] = await Promise.all([
-    isSearching ? searchSongs(searchQuery) : Promise.resolve([]),
-    isSearching ? Promise.resolve([]) : searchSongs('Dua Lipa'),
-    isSearching ? Promise.resolve([]) : searchSongs('Ed Sheeran'),
-    isSearching ? Promise.resolve([]) : searchSongs('Linkin Park'),
-  ]);
+  // Fetch data: search results if a query exists, otherwise featured songs.
+  const songs = isSearching 
+    ? await searchSongs(searchQuery)
+    : await searchSongs('Dua Lipa');
 
   return (
     <MainContainer>
@@ -28,7 +25,7 @@ export default async function Home({
           <p className="mb-8 text-muted-foreground">
             Showing results for "{searchQuery}"
           </p>
-          <SongList songs={searchResults} emptyStateMessage="No songs found." />
+          <SongList songs={songs} emptyStateMessage="No songs found." />
         </section>
       ) : (
         <div className="space-y-16">
@@ -39,25 +36,7 @@ export default async function Home({
             <p className="mb-8 text-muted-foreground">
               Popular tracks making waves right now.
             </p>
-            <SongList songs={featuredSongs.slice(0,5)} />
-          </section>
-           <section>
-            <h2 className="mb-2 font-headline text-3xl font-bold tracking-tight md:text-4xl">
-              Popular Pop
-            </h2>
-            <p className="mb-8 text-muted-foreground">
-              The biggest pop hits at the moment.
-            </p>
-            <SongList songs={popSongs.slice(0,5)} />
-          </section>
-          <section>
-            <h2 className="mb-2 font-headline text-3xl font-bold tracking-tight md:text-4xl">
-              Rock Essentials
-            </h2>
-            <p className="mb-8 text-muted-foreground">
-              Must-listen rock anthems.
-            </p>
-            <SongList songs={rockSongs.slice(0,5)} />
+            <SongList songs={songs.slice(0,10)} />
           </section>
         </div>
       )}
